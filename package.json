@@ -1,0 +1,30 @@
+{
+  "name": "multimeme",
+  "version": "1.0.0",
+  "description": "Multiframe meme creator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnnyRockenstein/multimeme.git"
+  },
+  "author": "Dustin Horrock",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JohnnyRockenstein/multimeme/issues"
+  },
+  "homepage": "https://github.com/JohnnyRockenstein/multimeme#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "ejs": "^2.5.6",
+    "express": "^4.15.3",
+    "gm": "^1.23.0",
+    "image-downloader": "^3.2.2",
+    "image-size": "^0.5.5",
+    "imagemagick": "^0.1.3",
+    "uuid": "^3.1.0"
+  }
+}
