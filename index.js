@@ -22,18 +22,18 @@ console.log('Up and running on port 3000');
 let post = {
 	memes: [{
 		url: 'https://prequelmemes.s3.amazonaws.com/3a762d50-55e3-11e7-aed3-2b2e38f1a510',
-		topText: 'This is the image one Top Text',
-		bottomText: 'This is image one bottom text'
+		topText: '',
+		bottomText: "Not now your mother is watching us"
 	},
 	{
 		url: 'https://prequelmemes.s3.amazonaws.com/1db15eb0-55e3-11e7-aed3-2b2e38f1a510',
-		topText: 'This is image two top text',
-		bottomText: 'This is image two bottom text'
+		topText: '',
+		bottomText: "You are soo beautiful"
 	},
 	{
 		url: 'https://prequelmemes.s3.amazonaws.com/31ed1e50-55e3-11e7-aed3-2b2e38f1a510',
-		topText: 'This is image three top text',
-		bottomText: 'This is image three bottom text'
+		topText: '',
+		bottomText: "Kiss my slave mouth"
 	}
 	]
 }
@@ -49,9 +49,22 @@ Promise
 		// And the loop is complete, I want to then have GM() attach all the completed images
 		// like this https://superuser.com/questions/290656/combine-multiple-images-using-imagemagick
 		// But only append the images together once the for loop as finished.
-		console.log(done);
-		console.log('we are done!');
-	})
+    let doneName = uuid() + '.jpg';
+    gm(done).append(done)
+    //.resize(400)
+    .write(doneName, function (err) {
+        console.log('Multi-Meme Created!');
+        done.forEach(function(file) {
+          fs.unlink(file, (err) => {
+            if (err) throw err;
+            console.log('successfully deleted meme image ' + file);
+            imgur.uploadFile(doneName)
+                .then(function (json) {
+                    console.log("Meme upladed to "+ json.data.link);
+          });
+        });
+      });
+    })
 
 /**
  * Collect the options for each passed image to create a single meme option.
@@ -67,8 +80,8 @@ function collectImageOptions(memes) {
 		const options = {
 			image: downloadOptions.dest,
 			outfile: `${uuid()}.jpg`,
-			topText: meme.topText,
-			bottomText: meme.bottomText,
+			topText: meme.topText.toUpperCase(),
+			bottomText: meme.bottomText.toUpperCase(),
 			font: 'impact.ttf',
 			fontSize: 28,
 			fontFill: '#FFF',
@@ -86,7 +99,7 @@ function collectImageOptions(memes) {
 
 /**
  * Download and use image magic on passed photos
- * @param {downloadOptions, options} 
+ * @param {downloadOptions, options}
  */
 function downloadImage({ downloadOptions, options }) {
 	return download.image(downloadOptions)
@@ -104,7 +117,7 @@ function downloadImage({ downloadOptions, options }) {
 					.drawText(350, 165, "prequelmemes.com")
 					.stroke(options.strokeColor)
 					.strokeWidth(options.strokeWeight)
-					.font(options.font, 40)
+					.font(options.font, options.fontSize)
 					.fill(options.fontFill)
 					.drawText(0, -150, options.topText)
 					.drawText(0, 150, options.bottomText)
@@ -128,5 +141,3 @@ function downloadImage({ downloadOptions, options }) {
 		});
 
 }
-
-
