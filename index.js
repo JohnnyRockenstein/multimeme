@@ -36,7 +36,7 @@ let post = {
 		bottomText: "Kiss my slave mouth"
 	}
 	]
-}
+};
 
 const baseUrl = 'https://prequelmemes.s3.amazonaws.com/';
 
@@ -45,25 +45,26 @@ const imageOptions = collectImageOptions(post.memes);
 Promise
 	.all(imageOptions.map(options => Promise.resolve(downloadImage(options))))
 	.then(done => {
-		//TO DO: Once the for loop downloads the images, and makes the them meme cell jpgs
-		// And the loop is complete, I want to then have GM() attach all the completed images
-		// like this https://superuser.com/questions/290656/combine-multiple-images-using-imagemagick
-		// But only append the images together once the for loop as finished.
-    let doneName = uuid() + '.jpg';
-    gm(done).append(done)
-    //.resize(400)
-    .write(doneName, function (err) {
-        console.log('Multi-Meme Created!');
-        done.forEach(function(file) {
-          fs.unlink(file, (err) => {
-            if (err) throw err;
-            console.log('successfully deleted meme image ' + file);
-            imgur.uploadFile(doneName)
-                .then(function (json) {
-                    console.log("Meme upladed to "+ json.data.link);
-          });
-        });
-      });
+        //TO DO: Once the for loop downloads the images, and makes the them meme cell jpgs
+        // And the loop is complete, I want to then have GM() attach all the completed images
+        // like this https://superuser.com/questions/290656/combine-multiple-images-using-imagemagick
+        // But only append the images together once the for loop as finished.
+        let doneName = uuid() + '.jpg';
+        gm(done).append(done)
+        //.resize(400)
+            .write(doneName, function (err) {
+                console.log('Multi-Meme Created!');
+                done.forEach(function (file) {
+                    fs.unlink(file, (err) => {
+                        if (err) throw err;
+                        console.log('successfully deleted meme image ' + file);
+                        // imgur.uploadFile(doneName)
+                        //     .then(function (json) {
+                        //         console.log("Meme upladed to " + json.data.link);
+                        //     });
+                    });
+                });
+            });
     })
 
 /**
@@ -75,7 +76,7 @@ function collectImageOptions(memes) {
 		const downloadOptions = {
 			url: meme.url,
 			dest: `${meme.url.substring(baseUrl.length, meme.url.length)}.jpg`
-		}
+		};
 
 		const options = {
 			image: downloadOptions.dest,
@@ -108,7 +109,7 @@ function downloadImage({ downloadOptions, options }) {
 
 			const dimensions = sizeOf(options.image);
 
-			return new Promise((res, rej) => {
+			return new Promise((res, req) => {
 				gm(options.image)
 					.region(dimensions.width, dimensions.height, 0, 0)
 					.gravity(options.textPos)
@@ -135,9 +136,10 @@ function downloadImage({ downloadOptions, options }) {
 						}
 					});
 			}).catch((err) => {
-				rej(err);
+				req(err);
 				throw err
 			})
 		});
+};
 
-}
+
